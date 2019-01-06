@@ -70,15 +70,15 @@ def user_io_loop(sock, mm_system, sendto_address):
         sock.sendto(output_message_bytes, sendto_address)
 
         output_message = mm_system.make_message(MarklinCAN.Message.SystemCommand.CONFIG_DATA_QUERY, False)
-        output_message.set_payload(bytes("ET 515".format(offset, count), MarklinCAN.Message.encoding))
+        output_message.set_payload(bytes("ET 515\0\0".format(offset, count), MarklinCAN.Message.encoding))
 
         output_message_bytes = output_message.to_bytes()
         print("Sending Message to {1}:{2}: {0} ".format(output_message, sendto_address[0], sendto_address[1]))
         sock.sendto(output_message_bytes, sendto_address)
 
         output_message = mm_system.make_message(MarklinCAN.Message.SystemCommand.CONFIG_DATA_QUERY, False)
-        output_message.set_payload(bytes("".format(offset, count), MarklinCAN.Message.encoding))
-        # We always need to send the loco name in two packets. The second one can remain empty.
+        output_message.set_payload(bytes("\0\0\0\0\0\0\0\0".format(offset, count), MarklinCAN.Message.encoding))
+        # We always need to send the loco name in two zero-padded packets.
 
         output_message_bytes = output_message.to_bytes()
         print("Sending Message to {1}:{2}: {0} ".format(output_message, sendto_address[0], sendto_address[1]))
